@@ -15,30 +15,34 @@ import org.bukkit.inventory.ItemStack;
 public class DetectArrow implements Listener {
 
 	private ItemStack bow;
-	
+
 	@EventHandler
 	public void setBlockOnFire(ProjectileHitEvent e) {
 		Projectile p = e.getEntity();
-		
+
 		if (p instanceof Arrow && bow != null) {
 			Block b = e.getHitBlock();
-			BlockFace face = e.getHitBlockFace();
-			
-			Block related = b.getRelative(face);
-			related.setType(Material.FIRE);
+
+			if (b != null) {
+				BlockFace face = e.getHitBlockFace();
+
+				Block related = b.getRelative(face);
+
+				if (!related.getType().isSolid())
+					related.setType(Material.FIRE);
+			}
 		}
-		
 	}
-	
+
 	@EventHandler
 	public void findBow(PlayerItemDamageEvent e) {
 		ItemStack i = e.getItem();
-		
+
 		if (i.getType().equals(Material.BOW) && i.containsEnchantment(Enchantment.ARROW_FIRE)) {
 			bow = i;
 		} else {
 			bow = null;
 		}
 	}
-	
+
 }
